@@ -24,7 +24,6 @@ export async function researcher(
     </Section>
   )
 
-  let isFirstToolResponse = true
   const currentDate = new Date().toLocaleString()
   const result = await nonexperimental_streamText({
     model: getModel(),
@@ -40,10 +39,21 @@ export async function researcher(
     messages,
     tools: getTools({
       uiStream,
-      fullResponse,
-      isFirstToolResponse
+      fullResponse
     })
+  }).catch(err => {
+    hasError = true
+    fullResponse = 'Error: ' + err.message
+    streamText.update(fullResponse)
   })
+
+  // If the result is not available, return an error response
+  if (!result) {
+    return { result, fullResponse, hasError, toolResponses: [] }
+  }
+
+  // Remove the spinner
+  uiStream.update(null)
 
   // Process the response
   const toolCalls: ToolCallPart[] = []
@@ -76,6 +86,7 @@ export async function researcher(
         toolResponses.push(delta)
         break
       case 'error':
+        console.log('Error: ' + delta.error)
         hasError = true
         fullResponse += `\nError occurred while executing the tool`
         break
