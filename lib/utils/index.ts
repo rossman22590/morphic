@@ -1,25 +1,63 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import { OpenAI } from '@ai-sdk/openai'
+import { createOllama } from 'ollama-ai-provider'
+import { createOpenAI } from '@ai-sdk/openai'
 import { google } from '@ai-sdk/google'
-import { AIMessage } from '../types'
+import { anthropic } from '@ai-sdk/anthropic'
 import { CoreMessage } from 'ai'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getModel() {
-  if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+export function getModel(useSubModel = false) {
+  const ollamaBaseUrl = process.env.OLLAMA_BASE_URL + '/api'
+  const ollamaModel = process.env.OLLAMA_MODEL
+  const ollamaSubModel = process.env.OLLAMA_SUB_MODEL
+  const openaiApiBase = process.env.OPENAI_API_BASE
+  const openaiApiKey = process.env.OPENAI_API_KEY
+  let openaiApiModel = process.env.OPENAI_API_MODEL || 'gpt-4o'
+  const googleApiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY
+  const anthropicApiKey = process.env.ANTHROPIC_API_KEY
+
+  if (
+    !(ollamaBaseUrl && ollamaModel) &&
+    !openaiApiKey &&
+    !googleApiKey &&
+    !anthropicApiKey
+  ) {
+    throw new Error(
+      'Missing environment variables for Ollama, OpenAI, Google or Anthropic'
+    )
+  }
+  // Ollama
+  if (ollamaBaseUrl && ollamaModel) {
+    const ollama = createOllama({ baseURL: ollamaBaseUrl })
+
+    if (useSubModel && ollamaSubModel) {
+      return ollama(ollamaSubModel)
+    }
+
+    return ollama(ollamaModel)
+  }
+
+  if (googleApiKey) {
     return google('models/gemini-1.5-pro-latest')
   }
 
-  const openai = new OpenAI({
-    baseUrl: process.env.OPENAI_API_BASE, // optional base URL for proxies etc.
-    apiKey: process.env.OPENAI_API_KEY, // optional API key, default to env property OPENAI_API_KEY
+  if (anthropicApiKey) {
+    return anthropic('claude-3-5-sonnet-20240620')
+  }
+
+  // Fallback to OpenAI instead
+
+  const openai = createOpenAI({
+    baseURL: openaiApiBase, // optional base URL for proxies etc.
+    apiKey: openaiApiKey, // optional API key, default to env property OPENAI_API_KEY
     organization: '' // optional organization
   })
-  return openai.chat(process.env.OPENAI_API_MODEL || 'gpt-4o')
+
+  return openai.chat(openaiApiModel)
 }
 
 /**
@@ -30,8 +68,8 @@ export function getModel() {
  * @param aiMessages - Array of AIMessage
  * @returns modifiedMessages - Array of modified messages
  */
-export function transformToolMessages(aiMessages: AIMessage[]): CoreMessage[] {
-  return aiMessages.map(message =>
+export function transformToolMessages(messages: CoreMessage[]): CoreMessage[] {
+  return messages.map(message =>
     message.role === 'tool'
       ? {
           ...message,
