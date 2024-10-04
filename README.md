@@ -29,9 +29,8 @@ An AI-powered search engine with a generative UI.
   - Google Generative AI Provider
   - Azure OpenAI Provider [※](https://github.com/miurla/morphic/issues/13)
   - Anthropic Provider [※](https://github.com/miurla/morphic/pull/239)
-  - Ollama Provider ([Unstable](https://github.com/miurla/morphic/issues/215))
-- Specify the model to generate answers
-  - Groq API support [※](https://github.com/miurla/morphic/pull/58)
+  - Ollama Provider [※](https://github.com/miurla/morphic/issues/215#issuecomment-2381902347)
+  - Groq Provider
 - Local Redis support
 - SearXNG Search API support with customizable depth (basic or advanced)
 - Configurable search depth (basic or advanced)
@@ -233,13 +232,8 @@ engines:
   - Gemini 1.5 pro (Unstable)
 - Anthropic
   - Claude 3.5 Sonnet
-- Ollama (Unstable)
-  - mistral/openhermes & Phi3/llama3 [※](https://github.com/miurla/morphic/issues/215)
-
-### List of verified models that can be specified to writers:
-
-- [Groq](https://console.groq.com/docs/models)
-  - LLaMA3.1 8b
-  - LLaMA3.1 70B
-  - LLaMA3 8b
-  - LLaMA3 70b
+- Ollama
+  - qwen2.5
+- Groq
+  - llama3-groq-8b-8192-tool-use-preview
+  - llama3-groq-70b-8192-tool-use-preview
