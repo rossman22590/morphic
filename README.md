@@ -2,6 +2,9 @@
 
 An AI-powered search engine with a generative UI.
 
+> [!CAUTION]
+> Morphic is built with Vercel AI SDK RSC. AI SDK RSC is [experimental](https://sdk.vercel.ai/docs/getting-started/navigating-the-library#when-to-use-ai-sdk-rsc) and has some limitations. When using it in production, it is recommended to [migrate](https://sdk.vercel.ai/docs/ai-sdk-rsc/migrating-to-ui) to SDK UI.
+
 ![capture](/public/capture-240404_blk.png)
 
 > [!NOTE]
@@ -42,7 +45,7 @@ An AI-powered search engine with a generative UI.
 - Text streaming / Generative UI: [Vercel AI SDK](https://sdk.vercel.ai/docs)
 - Generative Model: [OpenAI](https://openai.com/)
 - Search API: [Tavily AI](https://tavily.com/) / [Serper](https://serper.dev) / [SearXNG](https://docs.searxng.org/)
-- Reader API: [Jina AI](https://jina.ai/)
+- Extract API: [Tavily AI](https://tavily.com/) / [Jina AI](https://jina.ai/)
 - Database (Serverless/Local): [Upstash](https://upstash.com/) / [Redis](https://redis.io/)
 - Component library: [shadcn/ui](https://ui.shadcn.com/)
 - Headless component primitives: [Radix UI](https://www.radix-ui.com/)
