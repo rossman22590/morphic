@@ -59,6 +59,7 @@ export default function RootLayout({
             <Header />
             {children}
             <Sidebar />
+             <Footer />
             <Toaster />
           </AppStateProvider>
         </ThemeProvider>
